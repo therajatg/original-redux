@@ -15,6 +15,7 @@ const initialState = {
 };
 
 //Action Creators (Understand that we don't use action creators in ContextAPI, we simply pass an object with type and payload in dispatch)
+
 const fetchUsersRequest = () => {
   return {
     type: FETCH_USERS_REQUEST,
@@ -35,14 +36,14 @@ const fetchUsersFailure = (error) => {
   };
 };
 
+//action creator returns an action but the below action creator will return a function.
 const fetchUsers = () => {
-  return (dispatch) => {
+  return function (dispatch) {
     dispatch(fetchUsersRequest());
-    const response = axios
-      .get("https://jsonplaceholder.typicode.com/users")
+    axios
+      .get("https://jsonplaceholder.typicode.com/todos/1")
       .then((response) => {
-        const userNames = response.data.map((user) => user.name);
-        dispatch(fetchUsersSuccess(userNames));
+        dispatch(fetchUsersSuccess(response.data));
       })
       .catch((error) => dispatch(fetchUsersFailure(error.message)));
   };
@@ -59,7 +60,7 @@ const reducer = (state = initialState, action) => {
         loading: false,
         users: action.payload,
       };
-    case FETCH_USERS_REQUEST:
+    case FETCH_USERS_FAILURE:
       return {
         ...state,
         loading: false,
